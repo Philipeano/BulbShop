@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BulbShop.Data
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork //: IDisposable
     {
         // A method for persisting all changes
         public void Commit();
@@ -17,7 +17,7 @@ namespace BulbShop.Data
         public void Rollback();
 
         // A method for disposing the object and freeing system resources
-        public void Dispose();
+        // public void Dispose();
 
         // A number of repository properties to handle data access
         public ProductRepository ProductRepository { get; }
@@ -27,7 +27,7 @@ namespace BulbShop.Data
 
     public class UnitOfWork : IUnitOfWork
     {
-        private bool _disposedValue;
+        // private bool _disposedValue;
         private readonly BulbShopContext _context;
         private readonly ProductRepository _productRepository;
 
@@ -65,33 +65,33 @@ namespace BulbShop.Data
         }
 
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects)
-                }
+        //protected virtual void Dispose(bool disposing)
+        //{
+        //    if (!_disposedValue)
+        //    {
+        //        if (disposing)
+        //        {
+        //            // TODO: dispose managed state (managed objects)
+        //        }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                _disposedValue = true;
-            }
-        }
+        //        // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+        //        // TODO: set large fields to null
+        //        _disposedValue = true;
+        //    }
+        //}
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~UnitOfWork()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
+        //// // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        //// ~UnitOfWork()
+        //// {
+        ////     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        ////     Dispose(disposing: false);
+        //// }
 
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+        //public void Dispose()
+        //{
+        //    // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //    Dispose(disposing: true);
+        //    GC.SuppressFinalize(this);
+        //}
     }
 }
