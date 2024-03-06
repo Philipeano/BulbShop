@@ -14,8 +14,8 @@ namespace BulbShop.Data.MappingProfiles
         public ProductProfile()
         {
             CreateMap<AddProductDto, Product>().ForMember(dest => dest.QuantityInStock, act => act.MapFrom(src => src.InitialQuantity));
-            CreateMap<UpdateProductDto, Product>();
-            CreateMap<Product, BaseProductModel>();
+            CreateMap<ProductDto, Product>().ForMember(dest => dest.CreatedOn, act => act.Ignore());
+            CreateMap<Product, ProductDto>();
         }
     }
 }

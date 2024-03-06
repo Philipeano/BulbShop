@@ -20,7 +20,7 @@ namespace BulbShop.Data
         // public void Dispose();
 
         // A number of repository properties to handle data access
-        public ProductRepository ProductRepository { get; }
+        public IProductRepository ProductRepository { get; }
     }
 
 
@@ -29,16 +29,15 @@ namespace BulbShop.Data
     {
         // private bool _disposedValue;
         private readonly BulbShopContext _context;
-        private readonly ProductRepository _productRepository;
+        private readonly IProductRepository _productRepository;
 
-        public UnitOfWork(BulbShopContext context, ProductRepository productRepository)
+        public UnitOfWork(BulbShopContext context, IProductRepository productRepository)
         {
             _context = context;
             _productRepository = productRepository;
         }
 
-
-        public ProductRepository ProductRepository => _productRepository;
+        public IProductRepository ProductRepository => _productRepository;
 
         public void Commit()
         {

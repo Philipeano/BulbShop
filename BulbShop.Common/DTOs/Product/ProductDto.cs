@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BulbShop.Common.DTOs.Product
 {
-    public record UpdateProductDto : BaseProductModel
+    public record ProductDto : BaseProductModel
     {
         public Guid Id { get; set; }
 

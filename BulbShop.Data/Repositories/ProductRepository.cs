@@ -12,15 +12,15 @@ namespace BulbShop.Data.Repositories
 {
     public interface IProductRepository
     {
-        public BaseProductModel AddProduct(AddProductDto newProduct);
+        public ProductDto AddProduct(AddProductDto newProduct);
 
-        public BaseProductModel UpdateProduct(UpdateProductDto product);
+        public ProductDto UpdateProduct(ProductDto product);
 
         public bool DeleteProduct(Guid id);
 
-        public BaseProductModel GetProduct(Guid id);
+        public ProductDto GetProduct(Guid id);
 
-        public IEnumerable<BaseProductModel> GetAllProducts();
+        public IEnumerable<ProductDto> GetAllProducts();
     }
 
 
@@ -36,9 +36,9 @@ namespace BulbShop.Data.Repositories
         }
 
 
-        public BaseProductModel AddProduct(AddProductDto newProduct)
+        public ProductDto AddProduct(AddProductDto newProduct)
         {
-            var newlyAddedProduct = new BaseProductModel();
+            ProductDto newlyAddedProduct = null;
             var productToAdd = _mapper.Map<Product>(newProduct);
             if (productToAdd != null)
             {
@@ -46,7 +46,7 @@ namespace BulbShop.Data.Repositories
                 productToAdd.CreatedOn = DateTime.Now;
                 productToAdd.ModifiedOn = DateTime.Now;
                 _context.Products.Add(productToAdd);
-                newlyAddedProduct = _mapper.Map<BaseProductModel>(productToAdd);
+                newlyAddedProduct = _mapper.Map<ProductDto>(productToAdd);
             }
             return newlyAddedProduct;
         }
@@ -64,35 +64,40 @@ namespace BulbShop.Data.Repositories
         }
 
 
-        public IEnumerable<BaseProductModel> GetAllProducts()
+        public IEnumerable<ProductDto> GetAllProducts()
         {
             return _context.Products
-                           .Select(p => _mapper.Map<BaseProductModel>(p))
+                           .AsNoTracking()
+                           .Select(p => _mapper.Map<ProductDto>(p))
                            .ToList();
         }
 
 
-        public BaseProductModel GetProduct(Guid id)
+        public ProductDto GetProduct(Guid id)
         {
-            var productToReturn = new BaseProductModel();
-            var product = _context.Products.Find(id);
+            ProductDto productToReturn = null;
+            var product = _context.Products
+                                  .AsNoTracking()
+                                  .SingleOrDefault(p => p.Id == id);
             if (product != null)
             {
-                productToReturn = _mapper.Map<BaseProductModel>(product);
+                productToReturn = _mapper.Map<ProductDto>(product);
             }
             return productToReturn;
         }
 
 
-        public BaseProductModel UpdateProduct(UpdateProductDto product)
+        public ProductDto UpdateProduct(ProductDto product)
         {
-            var newlyUpdatedProduct = new BaseProductModel();
+            ProductDto newlyUpdatedProduct = null;
             var productWithNewInfo = _mapper.Map<Product>(product);
             if (productWithNewInfo != null)
             {
+                // TODO: Ensure CreatedOn date is not reset when updating
                 productWithNewInfo.ModifiedOn = DateTime.Now;
+                _context.Entry(productWithNewInfo).State = EntityState.Modified;
                 _context.Products.Update(productWithNewInfo);
-                newlyUpdatedProduct = _mapper.Map<BaseProductModel>(productWithNewInfo);
+                newlyUpdatedProduct = _mapper.Map<ProductDto>(productWithNewInfo);
             }
             return newlyUpdatedProduct;
         }
