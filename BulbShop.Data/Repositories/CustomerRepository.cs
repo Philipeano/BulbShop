@@ -91,10 +91,10 @@ namespace BulbShop.Data.Repositories
         public CustomerDto UpdateCustomer(CustomerDto customer)
         {
             CustomerDto newlyUpdatedCustomer = null;
-            var customerWithNewInfo = _mapper.Map<Customer>(customer);
+            var existingCustomer = _context.Customers.Find(customer.Id);
+            var customerWithNewInfo = _mapper.Map(customer, existingCustomer);
             if (customerWithNewInfo != null)
             {
-                // TODO: Ensure CreatedOn date is not reset when updating
                 customerWithNewInfo.ModifiedOn = DateTime.Now;
                 _context.Entry(customerWithNewInfo).State = EntityState.Modified;
                 _context.Customers.Update(customerWithNewInfo);

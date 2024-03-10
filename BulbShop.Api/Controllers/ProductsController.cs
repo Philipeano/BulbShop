@@ -21,10 +21,15 @@ namespace BulbShop.Api.Controllers
         }
 
 
-        [HttpGet()]  // https://localhost:7057/api/Products
+        [HttpGet]  // https://localhost:7057/api/Products?brandName={brandName}&categoryName={categoryName}&manufacturerName={manufacturerName}
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ProductDto>))]
-        public IActionResult Get()
+        public IActionResult Get(string? brandName = null, string? categoryName = null, string? manufacturerName = null)
         {
+            if (Request.Query.Any())
+            {
+                return Ok(_unitOfWork.ProductRepository.GetFilteredProducts(brandName, categoryName, manufacturerName));
+            }
+            
             return Ok(_unitOfWork.ProductRepository.GetAllProducts());
         }
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BulbShop.Common.DTOs.Product;
+using BulbShop.Common.Enums;
 using BulbShop.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,6 +22,8 @@ namespace BulbShop.Data.Repositories
         public ProductDto GetProduct(Guid id);
 
         public IEnumerable<ProductDto> GetAllProducts();
+
+        public IEnumerable<ProductDto> GetFilteredProducts(string? brandName, string? categoryName, string? manufacturerName);
     }
 
 
@@ -73,6 +76,35 @@ namespace BulbShop.Data.Repositories
         }
 
 
+        public IEnumerable<ProductDto> GetFilteredProducts(string? brandName, string? categoryName, string? manufacturerName)
+        {
+            var filteredProducts = new List<ProductDto>();
+            var allProducts = _context.Products.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(brandName))
+            {
+                allProducts = allProducts.Where(p => p.BrandName.Contains(brandName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(categoryName) 
+                && Enum.TryParse(typeof(ProductCategory), categoryName, true, out object? category)
+                && (ProductCategory)category != ProductCategory.Unknown)
+            {
+                allProducts = allProducts.Where(p => p.Category == (ProductCategory)category);
+            }
+
+            if (!string.IsNullOrWhiteSpace(manufacturerName)
+                && Enum.TryParse(typeof(Manufacturer), manufacturerName, true, out object? manufacturer)
+                && (Manufacturer)manufacturer != Manufacturer.Unknown)
+            {
+                allProducts = allProducts.Where(p => p.Manufacturer == (Manufacturer)manufacturer);
+            }
+
+            filteredProducts = allProducts.Select(p => _mapper.Map<ProductDto>(p)).ToList();
+            return filteredProducts;
+        }
+
+
         public ProductDto GetProduct(Guid id)
         {
             ProductDto productToReturn = null;
@@ -90,10 +122,10 @@ namespace BulbShop.Data.Repositories
         public ProductDto UpdateProduct(ProductDto product)
         {
             ProductDto newlyUpdatedProduct = null;
-            var productWithNewInfo = _mapper.Map<Product>(product);
+            var existingProduct = _context.Products.Find(product.Id);
+            var productWithNewInfo = _mapper.Map(product, existingProduct);
             if (productWithNewInfo != null)
             {
-                // TODO: Ensure CreatedOn date is not reset when updating
                 productWithNewInfo.ModifiedOn = DateTime.Now;
                 _context.Entry(productWithNewInfo).State = EntityState.Modified;
                 _context.Products.Update(productWithNewInfo);

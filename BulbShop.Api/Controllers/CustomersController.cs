@@ -22,7 +22,7 @@ namespace BulbShop.Api.Controllers
         }
 
 
-        [HttpGet()]  // https://localhost:7057/api/Customers
+        [HttpGet]  // https://localhost:7057/api/Customers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CustomerDto>))]
         public IActionResult Get()
         {
