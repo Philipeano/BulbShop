@@ -22,7 +22,8 @@ namespace BulbShop.Data
         // A number of repository properties to handle data access
         public IProductRepository ProductRepository { get; }
         public ICustomerRepository CustomerRepository { get; }
-
+        public IOrderRepository OrderRepository { get; }
+        public IOrderItemRepository OrderItemRepository { get; }
     }
 
 
@@ -33,17 +34,29 @@ namespace BulbShop.Data
         private readonly BulbShopContext _context;
         private readonly IProductRepository _productRepository;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderItemRepository _orderItemRepository;
 
-        public UnitOfWork(BulbShopContext context, IProductRepository productRepository, ICustomerRepository customerRepository)
+        public UnitOfWork(BulbShopContext context, 
+                          IProductRepository productRepository, 
+                          ICustomerRepository customerRepository, 
+                          IOrderRepository orderRepository, 
+                          IOrderItemRepository orderItemRepository)
         {
             _context = context;
             _productRepository = productRepository;
             _customerRepository = customerRepository;
+            _orderRepository = orderRepository;
+            _orderItemRepository = orderItemRepository;
         }
 
         public IProductRepository ProductRepository => _productRepository;
 
         public ICustomerRepository CustomerRepository => _customerRepository;
+
+        public IOrderRepository OrderRepository => _orderRepository;
+
+        public IOrderItemRepository OrderItemRepository => _orderItemRepository;
 
         public void Commit()
         {
