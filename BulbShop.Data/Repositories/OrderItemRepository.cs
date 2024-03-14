@@ -41,7 +41,8 @@ namespace BulbShop.Data.Repositories
              */
             OrderItemDTO orderItemToReturn = null;
             var existingOrderItem = _context.OrderItems
-                                       .SingleOrDefault(i => i.OrderId == orderId && i.ProductId == orderItem.ProductId);
+                                            .AsNoTracking()
+                                            .SingleOrDefault(i => i.OrderId == orderId && i.ProductId == orderItem.ProductId);
 
             if (existingOrderItem == null)  // Add new
             {               
