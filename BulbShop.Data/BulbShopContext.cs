@@ -1,4 +1,5 @@
 ﻿using BulbShop.Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
@@ -10,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace BulbShop.Data
 {
-    public class BulbShopContext : DbContext
+    public class BulbShopContext : IdentityDbContext<ApplicationUser>
     {
 
-        public BulbShopContext(DbContextOptions options): base(options)
+        public BulbShopContext(DbContextOptions<BulbShopContext> options): base(options)
         {
 
         }
@@ -28,6 +29,8 @@ namespace BulbShop.Data
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.Items)
                 .WithOne(i => i.Order);
+
+            base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Product> Products { get; set; }
