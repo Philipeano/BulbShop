@@ -2,6 +2,8 @@ using BulbShop.Api.Models;
 using BulbShop.Common.DTOs.Product;
 using BulbShop.Common.Enums;
 using BulbShop.Data;
+using BulbShop.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -51,6 +53,7 @@ namespace BulbShop.Api.Controllers
         [HttpPost]  // https://localhost:7057/api/Products
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ProductDto))]
+        [Authorize(Roles = $"{UserRoles.Administrator},{UserRoles.Supervisor}")]
         public IActionResult Add([FromBody] AddProductDto product)
         {
             if (product == null || !ModelState.IsValid)
@@ -79,7 +82,6 @@ namespace BulbShop.Api.Controllers
             }
 
             return Created($"{Request.Path}/{addedProduct.Id}", addedProduct);
-
         }
 
 
@@ -88,6 +90,7 @@ namespace BulbShop.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
+        [Authorize(Roles = $"{UserRoles.Administrator},{UserRoles.Supervisor}")]
         public IActionResult Update([FromRoute] Guid id, [FromBody] ProductDto product)
         {
             // Check that a product with the specified id exists
@@ -132,6 +135,7 @@ namespace BulbShop.Api.Controllers
         [HttpDelete("{id}")]  // https://localhost:7057/api/Products/some-guid-value-for-id
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
+        [Authorize(Roles = UserRoles.Administrator)]
         public IActionResult Delete(Guid id)
         {
             var matchedProduct = _unitOfWork.ProductRepository.GetProduct(id);

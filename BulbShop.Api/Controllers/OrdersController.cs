@@ -3,6 +3,8 @@ using BulbShop.Common.DTOs.Order;
 using BulbShop.Common.DTOs.Product;
 using BulbShop.Common.Enums;
 using BulbShop.Data;
+using BulbShop.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,6 +14,7 @@ namespace BulbShop.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly ILogger<OrdersController> _logger;
@@ -25,6 +28,7 @@ namespace BulbShop.Api.Controllers
 
         [HttpGet]  // https://localhost:7057/api/Orders
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<OrderSummaryDTO>))]
+        [Authorize(Roles = $"{UserRoles.Administrator},{UserRoles.Supervisor}")]
         public IActionResult Get()
         {
             return Ok(_unitOfWork.OrderRepository.GetAllOrders());
@@ -33,6 +37,7 @@ namespace BulbShop.Api.Controllers
 
         [HttpGet("{id}")]  // https://localhost:7057/api/Orders/some-guid-value-for-id
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderWithItemsDTO))]
+        [Authorize(Roles = $"{UserRoles.Administrator},{UserRoles.Supervisor},{UserRoles.SalesRep}")]
         public IActionResult Get(Guid id)
         {
             var matchedOrder = _unitOfWork.OrderRepository.GetOrder(id);
@@ -47,6 +52,7 @@ namespace BulbShop.Api.Controllers
         [HttpPost]  // https://localhost:7057/api/Orders
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OrderSummaryDTO))]
+        [Authorize(Roles = UserRoles.Customer)]
         public IActionResult Add([FromBody] AddOrderDTO order)
         {
             if (order == null || !ModelState.IsValid)
