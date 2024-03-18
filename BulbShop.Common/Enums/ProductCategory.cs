@@ -11,9 +11,10 @@ namespace BulbShop.Common.Enums
         Unknown = 0,
         Beverage,
         Gadget,
-        Electronic,
+        Electronics,
         Clothing,
         Utensil,
-        Stationery
+        Stationery,
+        Accessory
     }
 }

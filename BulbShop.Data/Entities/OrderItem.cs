@@ -10,10 +10,6 @@ namespace BulbShop.Data.Entities
 {
     public class OrderItem
     {
-        [Key]
-        public Guid ItemId { get; set; }
-
-
         [Required]
         public Guid ProductId { get; set; }
 
@@ -28,5 +24,9 @@ namespace BulbShop.Data.Entities
 
         [Required, ForeignKey(nameof(OrderId))]
         public Order Order { get; set; }
+
+
+        [Required]
+        public int Quantity { get; set; }
     }
 }
